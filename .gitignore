@@ -37,3 +37,4 @@
 .htaccess
 package.json
 package-lock.json
+/public_html/node_modules/
