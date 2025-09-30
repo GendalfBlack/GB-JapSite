@@ -1,13 +1,15 @@
+const path = require('path');
 const express = require('express');
-require('dotenv').config();
 
 const app = express();
-app.use(express.json()); // Allow JSON data
+app.use(express.json());
 
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
+
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/', (req, res) => {
-    res.send('Site is running!');
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
