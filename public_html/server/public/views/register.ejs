@@ -84,12 +84,14 @@
                             autocomplete="new-password"
                         />
 
-                        <label for="register-subscription">ID підписки (необов'язково)</label>
+                        <label for="register-password-confirm">Підтвердження пароля *</label>
                         <input
-                            type="text"
-                            id="register-subscription"
-                            name="subscriptionId"
-                            value="<%= registerForm.subscriptionId %>"
+                            type="password"
+                            id="register-password-confirm"
+                            name="passwordConfirm"
+                            minlength="6"
+                            required
+                            autocomplete="new-password"
                         />
 
                         <button type="submit" class="auth-submit">Створити акаунт</button>

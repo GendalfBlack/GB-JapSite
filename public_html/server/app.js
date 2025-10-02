@@ -47,6 +47,13 @@ app.use((req, res, next) => {
     next();
 });
 
+const ensureAuthenticated = (req, res, next) => {
+    if (!req.session.user) {
+        return res.redirect('/register#login');
+    }
+    next();
+};
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.set('view engine', 'ejs');
@@ -69,6 +76,25 @@ app.get('/register', authController.showRegister);
 app.post('/register', authController.register);
 app.post('/login', authController.login);
 app.post('/logout', authController.logout);
+
+app.get('/profile', ensureAuthenticated, (req, res) => {
+    const loginSuccess = req.session.loginSuccess;
+    if (loginSuccess) {
+        delete req.session.loginSuccess;
+    }
+
+    res.render('profile', {
+        active: 'profile',
+        profileUser: req.session.user,
+        loginSuccess
+    });
+});
+
+app.get('/settings', ensureAuthenticated, (req, res) => {
+    res.render('settings', {
+        active: 'settings'
+    });
+});
 
 app.get('/api/courses', async (req, res) => {
     try {

@@ -39,9 +39,12 @@
                     <div class="profile-dropdown" role="menu" data-profile-dropdown>
                         <span class="profile-label">Привіт, <%= currentUser.displayName %></span>
                         <ul class="profile-dropdown__list">
-                            <li><a href="#" role="menuitem">Переглянути профіль</a></li>
-                            <li><a href="#" role="menuitem">Керувати підпискою</a></li>
-                            <li><a href="#" role="menuitem">Налаштування</a></li>
+                            <li>
+                                <a href="/profile" role="menuitem" <%= active==='profile' ? 'aria-current="page"' : '' %>>Переглянути профіль</a>
+                            </li>
+                            <li>
+                                <a href="/settings" role="menuitem" <%= active==='settings' ? 'aria-current="page"' : '' %>>Налаштування</a>
+                            </li>
                         </ul>
                         <div class="profile-dropdown__separator" role="none"></div>
                         <form action="/logout" method="post">

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="uk">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>NEKO &amp; KOI Academy — Профіль</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;700&family=Montserrat:wght@400;600;700&display=swap"
+            rel="stylesheet"
+        />
+        <link rel="stylesheet" href="/styles.css" />
+    </head>
+    <body>
+        <%- include('partials/nav', { active, currentUser }) %>
+
+        <main class="section profile-page">
+            <header class="profile-header">
+                <div class="profile-header__content">
+                    <h1>Ваш затишний профіль</h1>
+                    <p>Тут зібрана вся інформація про ваш акаунт у NEKO &amp; KOI Academy.</p>
+                </div>
+                <div class="profile-header__avatar">
+                    <img
+                        src="<%= (profileUser && profileUser.avatarUrl) || '/img/avatar-default.svg' %>"
+                        alt="Аватар профілю"
+                        width="120"
+                        height="120"
+                    />
+                </div>
+            </header>
+
+            <% if (loginSuccess) { %>
+                <div class="profile-alert profile-alert--success"><%= loginSuccess %></div>
+            <% } %>
+
+            <section class="profile-card">
+                <h2>Основні дані</h2>
+                <ul class="profile-data">
+                    <li>
+                        <span class="profile-data__label">Ім'я в профілі</span>
+                        <span class="profile-data__value"><%= (profileUser && profileUser.profileName) || 'Не вказано' %></span>
+                    </li>
+                    <li>
+                        <span class="profile-data__label">Логін</span>
+                        <span class="profile-data__value"><%= profileUser && profileUser.login %></span>
+                    </li>
+                    <li>
+                        <span class="profile-data__label">Електронна адреса</span>
+                        <span class="profile-data__value"><%= (profileUser && profileUser.email) || 'Не вказано' %></span>
+                    </li>
+                    <li>
+                        <span class="profile-data__label">ID підписки</span>
+                        <span class="profile-data__value"><%= (profileUser && profileUser.subscriptionId) ? profileUser.subscriptionId : 'Ще не підключено' %></span>
+                    </li>
+                </ul>
+            </section>
+
+            <section class="profile-actions">
+                <div class="profile-action-card">
+                    <h3>Хочете оновити дані?</h3>
+                    <p>Завітайте на сторінку налаштувань, щоб змінити ім'я, email або пароль.</p>
+                    <a class="profile-action-btn" href="/settings">До налаштувань</a>
+                </div>
+                <div class="profile-action-card">
+                    <h3>Потрібна допомога?</h3>
+                    <p>Напишіть нам через сторінку контактів — ми завжди поруч, щоб підтримати вас.</p>
+                    <a class="profile-action-btn profile-action-btn--outline" href="/contact">Написати нам</a>
+                </div>
+            </section>
+        </main>
+
+        <script src="/js/nav-menu.js" defer></script>
+    </body>
+</html>
