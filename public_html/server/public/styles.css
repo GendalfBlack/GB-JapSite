@@ -247,10 +247,6 @@ body.courses-page {
     width: 260px;
     height: 72px;
     background:
-        radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.85) 0 16%, transparent 18%),
-        radial-gradient(circle at 40% 40%, rgba(255, 255, 255, 0.75) 0 16%, transparent 18%),
-        radial-gradient(circle at 60% 60%, rgba(255, 255, 255, 0.7) 0 16%, transparent 18%),
-        radial-gradient(circle at 80% 45%, rgba(255, 255, 255, 0.8) 0 16%, transparent 18%),
         linear-gradient(180deg, rgba(255, 199, 213, 0.7), rgba(255, 118, 152, 0.85));
     border-radius: 40px;
     pointer-events: none;
