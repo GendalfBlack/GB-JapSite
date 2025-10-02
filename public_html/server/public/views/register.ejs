@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="uk">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>NEKO & KOI Academy — Реєстрація</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;700&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" />
+        <link rel="stylesheet" href="/styles.css" />
+    </head>
+    <body>
+        <%- include('partials/nav', { active }) %>
+
+        <main class="section auth-page">
+            <header class="auth-header">
+                <h1>Створіть обліковий запис NEKO &amp; KOI</h1>
+                <p>
+                    Зареєструйтесь, щоб зберігати прогрес у навчанні, отримувати персональні рекомендації та першими дізнаватися про нові курси.
+                </p>
+            </header>
+
+            <div class="auth-grid">
+                <section class="auth-card">
+                    <h2>Реєстрація</h2>
+                    <p>
+                        Заповніть форму нижче, щоб створити акаунт. Поля, позначені зірочкою, є обов'язковими.
+                    </p>
+
+                    <% if (messages.registerSuccess) { %>
+                        <div class="auth-alert auth-alert--success"><%= messages.registerSuccess %></div>
+                    <% } %>
+
+                    <% if (messages.registerErrors && messages.registerErrors.length) { %>
+                        <div class="auth-alert auth-alert--error">
+                            <span>Будь ласка, виправте наступні помилки:</span>
+                            <ul>
+                                <% messages.registerErrors.forEach(function(error) { %>
+                                    <li><%= error %></li>
+                                <% }) %>
+                            </ul>
+                        </div>
+                    <% } %>
+
+                    <form class="auth-form" action="/register" method="post" autocomplete="on">
+                        <label for="register-login">Логін *</label>
+                        <input
+                            type="text"
+                            id="register-login"
+                            name="login"
+                            minlength="3"
+                            required
+                            autocomplete="username"
+                            value="<%= registerForm.login %>"
+                        />
+
+                        <label for="register-name">Ім'я профілю *</label>
+                        <input
+                            type="text"
+                            id="register-name"
+                            name="profileName"
+                            minlength="2"
+                            required
+                            value="<%= registerForm.profileName %>"
+                        />
+
+                        <label for="register-email">Електронна адреса *</label>
+                        <input
+                            type="email"
+                            id="register-email"
+                            name="email"
+                            required
+                            autocomplete="email"
+                            value="<%= registerForm.email %>"
+                        />
+
+                        <label for="register-password">Пароль *</label>
+                        <input
+                            type="password"
+                            id="register-password"
+                            name="password"
+                            minlength="6"
+                            required
+                            autocomplete="new-password"
+                        />
+
+                        <label for="register-subscription">ID підписки (необов'язково)</label>
+                        <input
+                            type="text"
+                            id="register-subscription"
+                            name="subscriptionId"
+                            value="<%= registerForm.subscriptionId %>"
+                        />
+
+                        <button type="submit" class="auth-submit">Створити акаунт</button>
+                    </form>
+
+                    <p class="auth-note">Реєструючись, ви погоджуєтесь із нашою політикою конфіденційності та умовами користування.</p>
+                </section>
+
+                <section class="auth-card" id="login">
+                    <h2>Увійти</h2>
+                    <p>
+                        Вже маєте акаунт? Авторизуйтеся, використовуючи свій логін або email та пароль.
+                    </p>
+
+                    <% if (messages.loginSuccess) { %>
+                        <div class="auth-alert auth-alert--success"><%= messages.loginSuccess %></div>
+                    <% } %>
+
+                    <% if (messages.loginErrors && messages.loginErrors.length) { %>
+                        <div class="auth-alert auth-alert--error">
+                            <span>Не вдалося увійти:</span>
+                            <ul>
+                                <% messages.loginErrors.forEach(function(error) { %>
+                                    <li><%= error %></li>
+                                <% }) %>
+                            </ul>
+                        </div>
+                    <% } %>
+
+                    <form class="auth-form" action="/login" method="post" autocomplete="on">
+                        <label for="login-identifier">Логін або email *</label>
+                        <input
+                            type="text"
+                            id="login-identifier"
+                            name="identifier"
+                            required
+                            autocomplete="username"
+                        />
+
+                        <label for="login-password">Пароль *</label>
+                        <input
+                            type="password"
+                            id="login-password"
+                            name="password"
+                            required
+                            minlength="6"
+                            autocomplete="current-password"
+                        />
+
+                        <button type="submit" class="auth-submit">Увійти</button>
+                    </form>
+
+                    <p class="auth-note">Забули пароль? Зверніться до адміністратора академії, щоб його скинути.</p>
+                </section>
+            </div>
+        </main>
+    </body>
+</html>
