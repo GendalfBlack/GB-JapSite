@@ -213,3 +213,185 @@ body {
         width: 220px;
     }
 }
+
+/* Course management page */
+body.courses-page {
+    --courses-accent-dark: var(--primary-red);
+    --courses-accent-light: var(--accent-pink);
+    --courses-accent-medium: #dd4f68;
+    --courses-background: #fff3f6;
+    --courses-text: var(--text-dark);
+    --courses-shadow: rgba(191, 29, 45, 0.18);
+    margin: 0;
+    font-family: 'Montserrat', 'Comfortaa', sans-serif;
+    background: var(--courses-background);
+    color: var(--courses-text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.courses-page header {
+    background: linear-gradient(180deg, #ff627a 0%, var(--primary-red) 100%);
+    padding: 1.5rem 1rem 2.5rem;
+    position: relative;
+    box-shadow: 0 8px 20px rgba(191, 29, 45, 0.3);
+}
+
+.courses-page header::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: -36px;
+    width: 260px;
+    height: 72px;
+    background:
+        radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.85) 0 16%, transparent 18%),
+        radial-gradient(circle at 40% 40%, rgba(255, 255, 255, 0.75) 0 16%, transparent 18%),
+        radial-gradient(circle at 60% 60%, rgba(255, 255, 255, 0.7) 0 16%, transparent 18%),
+        radial-gradient(circle at 80% 45%, rgba(255, 255, 255, 0.8) 0 16%, transparent 18%),
+        linear-gradient(180deg, rgba(255, 199, 213, 0.7), rgba(255, 118, 152, 0.85));
+    border-radius: 40px;
+    pointer-events: none;
+}
+
+.courses-page .page-title {
+    text-align: center;
+    color: #fff;
+    margin: 0;
+    font-size: 1.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.courses-page .level-tabs {
+    margin: 1.5rem auto 0;
+    display: flex;
+    justify-content: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    position: relative;
+    z-index: 1;
+}
+
+.courses-page .level-tab {
+    border: none;
+    border-radius: 50px;
+    padding: 0.65rem 1.85rem;
+    font-size: 1rem;
+    font-weight: 700;
+    background: rgba(255, 255, 255, 0.75);
+    color: var(--courses-accent-dark);
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.courses-page .level-tab:focus-visible {
+    outline: 3px solid rgba(255, 255, 255, 0.8);
+    outline-offset: 2px;
+}
+
+.courses-page .level-tab.is-active {
+    background: #fff;
+    transform: translateY(-4px);
+    box-shadow: 0 6px 18px rgba(124, 1, 29, 0.25);
+}
+
+.courses-page main {
+    padding: 6rem 1rem 3rem;
+    width: min(1080px, 100%);
+    margin: 0 auto;
+}
+
+.courses-page .course-heading {
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.courses-page .course-heading h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: var(--courses-accent-dark);
+}
+
+.courses-page .course-heading p {
+    margin: 0.35rem 0 0;
+    color: rgba(76, 42, 42, 0.7);
+}
+
+.courses-page .lessons-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1.5rem;
+    padding: 1rem 0 2rem;
+}
+
+.courses-page .lesson-card {
+    background: var(--courses-accent-light);
+    border-radius: 28px;
+    padding: 1.75rem 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    flex-direction: column;
+    box-shadow: 0 12px 24px var(--courses-shadow);
+    position: relative;
+    overflow: hidden;
+}
+
+.courses-page .lesson-card::before {
+    content: '';
+    position: absolute;
+    inset: 12px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.35);
+    z-index: 0;
+}
+
+.courses-page .lesson-number {
+    position: relative;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 80px;
+    padding: 0.4rem 1rem;
+    border-radius: 999px;
+    background: var(--courses-accent-dark);
+    color: #fff;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.6rem;
+}
+
+.courses-page .lesson-title {
+    position: relative;
+    z-index: 1;
+    font-size: 0.95rem;
+    line-height: 1.4;
+    padding: 0 1rem;
+}
+
+.courses-page .status-message {
+    text-align: center;
+    color: rgba(76, 42, 42, 0.6);
+    font-style: italic;
+}
+
+@media (max-width: 600px) {
+    .courses-page header::after {
+        bottom: -28px;
+        width: 200px;
+    }
+
+    .courses-page .level-tab {
+        padding: 0.55rem 1.5rem;
+        font-size: 0.9rem;
+    }
+
+    .courses-page main {
+        padding-top: 5.5rem;
+    }
+}
