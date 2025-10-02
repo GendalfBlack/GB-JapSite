@@ -21,12 +21,16 @@ const pool = mysql.createPool({
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+
+// pages
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+    res.render('index', { active: 'home' });
 });
 
 app.get('/course-management', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'course-management.html'));
+    res.render('course-management', { active: 'courses' });
 });
 
 app.get('/api/courses', async (req, res) => {

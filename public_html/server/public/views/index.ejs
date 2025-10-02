@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="uk">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>NEKO & KOI Academy</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;700&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" />
+        <link rel="stylesheet" href="/styles.css" />
+    </head>
+    <body>
+        <%- include('partials/nav', { active }) %>
+
+        <main class="hero">
+            <section class="hero__left">
+                <div class="left-card">
+                    <span class="badge">Вітаємо у світі японської мови!</span>
+                    <img src="img/logo.webp" alt="Манекі-неко" class="lucky-cat" />
+
+                    <div class="paw-list">
+                        <ul>
+                            <li>Ви зможете дивитися аніме й дорами без субтитрів</li>
+                            <li>Читати манґу в оригіналі</li>
+                            <li>Розуміти японські пісні та спілкуватися з носіями</li>
+                            <li>Здобувати нові знання й можливості для навчання та роботи</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section class="hero__right">
+                <article class="intro">
+                    <h2>Японська мова — це не просто слова та ієрогліфи. Це цілий всесвіт культури, традицій, мистецтва та сучасних технологій. Вивчаючи мову, ви відкриваєте двері до Японії.</h2>
+                </article>
+
+                <div class="torii-card">
+                    <img src="img/banner.png" alt="Торії, пагода та сакура" class="torii-image" />
+                    <p class="intro__footer">Почніть свою подорож у світ японської мови вже сьогодні!</p>
+                </div>
+            </section>
+        </main>
+    </body>
+</html>
