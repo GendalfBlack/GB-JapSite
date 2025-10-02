@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="uk">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>NEKO &amp; KOI — Контакти</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;700&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="/styles.css">
+    </head>
+    <body class="section contact">
+        <%- include('partials/nav', { active }) %>
+
+        <main class="contact-layout">
+            <section class="contact-card" aria-labelledby="contactTitle">
+                <span class="badge contact-badge">Зв'яжіться з нами</span>
+                <h2 id="contactTitle">Ми завжди раді новим знайомствам</h2>
+                <p class="contact-text">Обирайте зручний спосіб зв'язку — відповімо на всі питання про навчання, розклад і співпрацю.</p>
+
+                <dl class="contact-list">
+                    <div class="contact-item">
+                        <dt>Ел. пошта</dt>
+                        <dd><a href="mailto:hello@neko-koi.example">hello@neko-koi.example</a></dd>
+                    </div>
+                    <div class="contact-item">
+                        <dt>Telegram</dt>
+                        <dd><a href="https://t.me/neko_koi_academy" target="_blank" rel="noopener">Громадський чат NEKO &amp; KOI</a></dd>
+                    </div>
+                    <div class="contact-item">
+                        <dt>Instagram</dt>
+                        <dd><a href="https://instagram.com/neko_koi_academy" target="_blank" rel="noopener">@neko_koi_academy</a></dd>
+                    </div>
+                    <div class="contact-item">
+                        <dt>TikTok</dt>
+                        <dd><a href="https://tiktok.com/@neko_koi_academy" target="_blank" rel="noopener">@neko_koi_academy</a></dd>
+                    </div>
+                    <div class="contact-item">
+                        <dt>YouTube</dt>
+                        <dd><a href="https://youtube.com/@neko_koi_academy" target="_blank" rel="noopener">NEKO &amp; KOI Academy</a></dd>
+                    </div>
+                </dl>
+
+                <p class="contact-footer">Пишіть нам — ми на зв'язку щодня з 10:00 до 20:00 (GMT+2).</p>
+            </section>
+
+            <aside class="contact-visuals" aria-label="Місце для майбутніх фотографій">
+                <div class="photo-placeholder">
+                    <span class="photo-caption">Тут буде тепле фото команди</span>
+                </div>
+                <div class="photo-placeholder">
+                    <span class="photo-caption">А тут — наші учні та атмосфера уроків</span>
+                </div>
+            </aside>
+        </main>
+    </body>
+</html>
