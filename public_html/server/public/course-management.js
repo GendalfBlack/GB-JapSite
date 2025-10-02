@@ -199,18 +199,21 @@ class CourseManager {
             if (!Array.isArray(payload)) {
                 throw new Error('Unexpected payload format');
             }
-
+        
             this.setCourses(payload);
             this.ui.renderLevelTabs(this.courses, course => this.handleLevelSelection(course));
         } catch (error) {
             console.error('Failed to load courses', error);
+
             this.courses = [];
             this.ui.clearLevels();
             this.ui.renderCourse(null);
+
             this.ui.showStatus('Unable to load courses right now. Please try again later.');
         }
     }
 }
+
 
 (function initialiseCourseManagement() {
     const levelTabsContainer = document.querySelector('.level-tabs');
