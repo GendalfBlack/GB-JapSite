@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="uk">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>NEKO &amp; KOI Academy — Налаштування</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;700&family=Montserrat:wght@400;600;700&display=swap"
+            rel="stylesheet"
+        />
+        <link rel="stylesheet" href="/styles.css" />
+    </head>
+    <body>
+        <%- include('partials/nav', { active, currentUser }) %>
+
+        <main class="section settings-page">
+            <header class="settings-header">
+                <h1>Налаштування акаунта</h1>
+                <p>Оберіть, що хочете змінити — і ми допоможемо навести лад у вашому профілі.</p>
+            </header>
+
+            <section class="settings-grid">
+                <article class="settings-card">
+                    <h2>Ім'я профілю</h2>
+                    <p>Оновіть своє відображуване ім'я, щоб друзі впізнавали вас миттєво.</p>
+                    <div class="settings-form">
+                        <label for="profileName">Нове ім'я профілю</label>
+                        <input
+                            type="text"
+                            id="profileName"
+                            name="profileName"
+                            placeholder="Наприклад: SakuraFan"
+                            maxlength="50"
+                        />
+                        <button type="button" class="settings-submit">Зберегти ім'я</button>
+                    </div>
+                </article>
+
+                <article class="settings-card">
+                    <h2>Електронна адреса</h2>
+                    <p>Змінюйте email, якщо переїхали на нову скриньку — ми надішлемо підтвердження.</p>
+                    <div class="settings-form">
+                        <label for="email">Нова адреса</label>
+                        <input type="email" id="email" name="email" placeholder="name@example.com" />
+                        <button type="button" class="settings-submit">Оновити email</button>
+                    </div>
+                </article>
+
+                <article class="settings-card">
+                    <h2>Пароль</h2>
+                    <p>Час від часу змінюйте пароль, щоб акаунт залишався в безпеці.</p>
+                    <div class="settings-form settings-form--stacked">
+                        <label for="currentPassword">Поточний пароль</label>
+                        <input type="password" id="currentPassword" name="currentPassword" autocomplete="current-password" />
+                        <label for="newPassword">Новий пароль</label>
+                        <input type="password" id="newPassword" name="newPassword" autocomplete="new-password" />
+                        <label for="newPasswordConfirm">Підтвердження нового пароля</label>
+                        <input type="password" id="newPasswordConfirm" name="newPasswordConfirm" autocomplete="new-password" />
+                        <button type="button" class="settings-submit">Змінити пароль</button>
+                    </div>
+                </article>
+            </section>
+
+            <section class="settings-note">
+                <h2>Порада дня</h2>
+                <p>
+                    Нехай ваш профіль відображає ваш настрій! Оберіть миле ім'я, а якщо виникнуть труднощі — наша команда підтримки
+                    завжди поруч.
+                </p>
+            </section>
+        </main>
+
+        <script src="/js/nav-menu.js" defer></script>
+    </body>
+</html>

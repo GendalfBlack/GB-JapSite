@@ -9,12 +9,11 @@ class AuthService {
         return crypto.createHash('sha256').update(password).digest('hex');
     }
 
-    validateRegisterPayload({ login = '', profileName = '', email = '', password = '', subscriptionId = '' }) {
+    validateRegisterPayload({ login = '', profileName = '', email = '', password = '', passwordConfirm = '' }) {
         const trimmed = {
             login: login.trim(),
             profileName: profileName.trim(),
-            email: email.trim(),
-            subscriptionId: subscriptionId.trim()
+            email: email.trim()
         };
 
         const errors = [];
@@ -40,8 +39,10 @@ class AuthService {
             errors.push('Пароль має містити щонайменше 6 символів.');
         }
 
-        if (trimmed.subscriptionId && trimmed.subscriptionId.length > 32) {
-            errors.push('ID підписки не може бути довшим за 32 символи.');
+        if (!passwordConfirm) {
+            errors.push('Підтвердіть пароль.');
+        } else if (password && password !== passwordConfirm) {
+            errors.push('Паролі не співпадають.');
         }
 
         return { trimmed, errors };
@@ -79,13 +80,13 @@ class AuthService {
             profileName: trimmed.profileName,
             email: trimmed.email,
             passwordHash,
-            subscriptionId: trimmed.subscriptionId
+            subscriptionId: null
         });
 
         return {
             success: true,
             status: 201,
-            registerForm: { login: '', profileName: '', email: '', subscriptionId: '' },
+            registerForm: { login: '', profileName: '', email: '' },
             messages: {
                 registerSuccess: 'Обліковий запис успішно створено! Тепер ви можете увійти.'
             }
@@ -141,6 +142,7 @@ class AuthService {
                 login: user.login,
                 profileName: user.profileName,
                 subscriptionId: user.subscriptionId,
+                email: user.email,
                 displayName,
                 avatarUrl: '/img/avatar-default.svg'
             },

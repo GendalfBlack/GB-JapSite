@@ -14,8 +14,7 @@ class AuthController {
         const defaultForm = {
             login: '',
             profileName: '',
-            email: '',
-            subscriptionId: ''
+            email: ''
         };
 
         const defaultMessages = {
@@ -52,8 +51,7 @@ class AuthController {
                 registerForm: {
                     login: req.body.login || '',
                     profileName: req.body.profileName || '',
-                    email: req.body.email || '',
-                    subscriptionId: req.body.subscriptionId || ''
+                    email: req.body.email || ''
                 },
                 messages: {
                     registerErrors: ['Сталася помилка під час створення акаунта. Спробуйте ще раз пізніше.']
@@ -72,10 +70,10 @@ class AuthController {
 
             req.session.user = result.user;
             res.locals.currentUser = result.user;
-            return this.renderRegisterPage(res, {
-                status: result.status,
-                messages: result.messages
-            });
+            if (result.messages && result.messages.loginSuccess) {
+                req.session.loginSuccess = result.messages.loginSuccess;
+            }
+            return res.redirect('/profile');
         } catch (error) {
             console.error('Error logging in user:', error);
             return this.renderRegisterPage(res, {
