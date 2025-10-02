@@ -1,9 +1,10 @@
 'use strict';
 
 class Lesson {
-    constructor({ lessonNumber, title }) {
+    constructor({ lessonNumber, title, summary = '' }) {
         this.lessonNumber = lessonNumber;
         this.title = title;
+        this.summary = summary;
     }
 
     get displayNumber() {
@@ -12,7 +13,8 @@ class Lesson {
 }
 
 class Course {
-    constructor({ levelCode, name, description = '', lessons = [] }) {
+    constructor({ id = null, levelCode, name, description = '', lessons = [] }) {
+        this.id = id;
         this.levelCode = levelCode;
         this.name = name;
         this.description = description;
@@ -37,9 +39,13 @@ class CourseUI {
         this.levelButtons = new Map();
     }
 
-    renderLevelTabs(courses, onSelect) {
+    clearLevels() {
         this.levelTabsContainer.innerHTML = '';
         this.levelButtons.clear();
+    }
+
+    renderLevelTabs(courses, onSelect) {
+        this.clearLevels();
 
         let firstCourse = null;
 
@@ -147,22 +153,14 @@ class CourseUI {
 }
 
 class CourseManager {
-    constructor({ ui, apiEndpoint, sampleCourses = [], useMockData = false }) {
+    constructor({ ui, apiEndpoint }) {
         this.ui = ui;
         this.apiEndpoint = apiEndpoint;
-        this.sampleCourses = sampleCourses;
-        this.useMockData = useMockData;
         this.courses = [];
         this.activeLevel = '';
     }
 
     async init() {
-        if (this.useMockData) {
-            this.setCourses(this.sampleCourses);
-            this.ui.renderLevelTabs(this.courses, course => this.handleLevelSelection(course));
-            return;
-        }
-
         await this.loadCourses();
     }
 
@@ -186,137 +184,36 @@ class CourseManager {
         this.ui.showStatus('Loading courses…');
 
         try {
-            const response = await fetch(this.apiEndpoint);
+            const response = await fetch(this.apiEndpoint, {
+                headers: {
+                    'Accept': 'application/json'
+                }
+            });
 
             if (!response.ok) {
                 throw new Error(`Request failed with status ${response.status}`);
             }
 
             const payload = await response.json();
+
+            if (!Array.isArray(payload)) {
+                throw new Error('Unexpected payload format');
+            }
+        
             this.setCourses(payload);
             this.ui.renderLevelTabs(this.courses, course => this.handleLevelSelection(course));
         } catch (error) {
             console.error('Failed to load courses', error);
+
+            this.courses = [];
+            this.ui.clearLevels();
+            this.ui.renderCourse(null);
+
             this.ui.showStatus('Unable to load courses right now. Please try again later.');
         }
     }
 }
 
-const sampleCourseData = [
-    {
-        levelCode: 'N5',
-        name: 'JLPT N5',
-        description: 'Foundational Japanese for absolute beginners.',
-        lessons: [
-            { lessonNumber: 1, title: 'Lesson 1: Hiragana Basics' },
-            { lessonNumber: 2, title: 'Lesson 2: Greetings and Introductions' },
-            { lessonNumber: 3, title: 'Lesson 3: Daily Activities Vocabulary' },
-            { lessonNumber: 4, title: 'Lesson 4: Numbers and Counters' },
-            { lessonNumber: 5, title: 'Lesson 5: Basic Sentence Structure' },
-            { lessonNumber: 6, title: 'Lesson 6: Family and Relationships' },
-            { lessonNumber: 7, title: 'Lesson 7: Time Expressions' },
-            { lessonNumber: 8, title: 'Lesson 8: Adjectives and Descriptions' },
-            { lessonNumber: 9, title: 'Lesson 9: Asking Questions' },
-            { lessonNumber: 10, title: 'Lesson 10: Shopping Phrases' },
-            { lessonNumber: 11, title: 'Lesson 11: Verb Te-form Basics' },
-            { lessonNumber: 12, title: 'Lesson 12: Locations and Directions' },
-            { lessonNumber: 13, title: 'Lesson 13: Particles Review' },
-            { lessonNumber: 14, title: 'Lesson 14: Likes and Dislikes' },
-            { lessonNumber: 15, title: 'Lesson 15: Weather and Seasons' },
-            { lessonNumber: 16, title: 'Lesson 16: Verb Past Tense' },
-            { lessonNumber: 17, title: 'Lesson 17: Invitations and Plans' },
-            { lessonNumber: 18, title: 'Lesson 18: Transportation Vocabulary' },
-            { lessonNumber: 19, title: 'Lesson 19: Restaurant Conversations' },
-            { lessonNumber: 20, title: 'Lesson 20: Giving Reasons with kara' },
-            { lessonNumber: 21, title: 'Lesson 21: Verb Potential Form' },
-            { lessonNumber: 22, title: 'Lesson 22: Invitations with mashou' },
-            { lessonNumber: 23, title: 'Lesson 23: Requests with kudasai' },
-            { lessonNumber: 24, title: 'Lesson 24: Comparisons with yori' },
-            { lessonNumber: 25, title: 'Lesson 25: Review and Practice' }
-        ]
-    },
-    {
-        levelCode: 'N4',
-        name: 'JLPT N4',
-        description: 'Lower-intermediate Japanese grammar and vocabulary.',
-        lessons: [
-            { lessonNumber: 1, title: 'Lesson 1: Keigo Essentials' },
-            { lessonNumber: 2, title: 'Lesson 2: Complex Sentence Patterns' },
-            { lessonNumber: 3, title: 'Lesson 3: Verb Te-iru Nuances' },
-            { lessonNumber: 4, title: 'Lesson 4: Expressing Obligation' },
-            { lessonNumber: 5, title: 'Lesson 5: Expressing Ability and Permission' },
-            { lessonNumber: 6, title: 'Lesson 6: Wishes and Intentions' },
-            { lessonNumber: 7, title: 'Lesson 7: Giving and Receiving Verbs' },
-            { lessonNumber: 8, title: 'Lesson 8: Expressing Experience' },
-            { lessonNumber: 9, title: 'Lesson 9: Conditional Forms' },
-            { lessonNumber: 10, title: 'Lesson 10: Casual Speech Patterns' },
-            { lessonNumber: 11, title: 'Lesson 11: Expressing Purpose' },
-            { lessonNumber: 12, title: 'Lesson 12: Transitive vs. Intransitive Verbs' },
-            { lessonNumber: 13, title: 'Lesson 13: Describing Preparations' },
-            { lessonNumber: 14, title: 'Lesson 14: Expressing Hearsay' },
-            { lessonNumber: 15, title: 'Lesson 15: Expressing Attempts' },
-            { lessonNumber: 16, title: 'Lesson 16: Passive Voice Introduction' },
-            { lessonNumber: 17, title: 'Lesson 17: Causative Basics' },
-            { lessonNumber: 18, title: 'Lesson 18: Expressing Excess' },
-            { lessonNumber: 19, title: 'Lesson 19: Expressing While Doing' },
-            { lessonNumber: 20, title: 'Lesson 20: Review and Practice' }
-        ]
-    },
-    {
-        levelCode: 'N3',
-        name: 'JLPT N3',
-        description: 'Bridge level with intermediate grammar patterns.',
-        lessons: [
-            { lessonNumber: 1, title: 'Lesson 1: Nuanced Particles' },
-            { lessonNumber: 2, title: 'Lesson 2: Advanced Te-form Uses' },
-            { lessonNumber: 3, title: 'Lesson 3: Expressing Concessions' },
-            { lessonNumber: 4, title: 'Lesson 4: Emphasis Structures' },
-            { lessonNumber: 5, title: 'Lesson 5: Expressing Probability' },
-            { lessonNumber: 6, title: 'Lesson 6: Passive Causative Review' },
-            { lessonNumber: 7, title: 'Lesson 7: Formal Expressions' },
-            { lessonNumber: 8, title: 'Lesson 8: Relative Clauses' },
-            { lessonNumber: 9, title: 'Lesson 9: Expressing Intentions' },
-            { lessonNumber: 10, title: 'Lesson 10: Idiomatic Expressions' },
-            { lessonNumber: 11, title: 'Lesson 11: Written Japanese Styles' },
-            { lessonNumber: 12, title: 'Lesson 12: Expressing Gradual Change' },
-            { lessonNumber: 13, title: 'Lesson 13: Hypothetical Expressions' },
-            { lessonNumber: 14, title: 'Lesson 14: Expressing Emotions' },
-            { lessonNumber: 15, title: 'Lesson 15: Review and Practice' }
-        ]
-    },
-    {
-        levelCode: 'N2',
-        name: 'JLPT N2',
-        description: 'Upper-intermediate Japanese for academic and professional contexts.',
-        lessons: [
-            { lessonNumber: 1, title: 'Lesson 1: Academic Reading Strategies' },
-            { lessonNumber: 2, title: 'Lesson 2: Nuanced Conditionals' },
-            { lessonNumber: 3, title: 'Lesson 3: Formal Written Expressions' },
-            { lessonNumber: 4, title: 'Lesson 4: Advanced Honorifics' },
-            { lessonNumber: 5, title: 'Lesson 5: Expressing Criticism' },
-            { lessonNumber: 6, title: 'Lesson 6: Emphatic Structures' },
-            { lessonNumber: 7, title: 'Lesson 7: Academic Vocabulary' },
-            { lessonNumber: 8, title: 'Lesson 8: Expressing Simultaneity' },
-            { lessonNumber: 9, title: 'Lesson 9: Persuasive Writing' },
-            { lessonNumber: 10, title: 'Lesson 10: Review and Practice' }
-        ]
-    },
-    {
-        levelCode: 'N1',
-        name: 'JLPT N1',
-        description: 'Advanced Japanese with native-level comprehension.',
-        lessons: [
-            { lessonNumber: 1, title: 'Lesson 1: Advanced Reading Comprehension' },
-            { lessonNumber: 2, title: 'Lesson 2: Nuanced Vocabulary' },
-            { lessonNumber: 3, title: 'Lesson 3: Hypothetical Discourse' },
-            { lessonNumber: 4, title: 'Lesson 4: Expressing Contradiction' },
-            { lessonNumber: 5, title: 'Lesson 5: Formal Speechcraft' },
-            { lessonNumber: 6, title: 'Lesson 6: Academic Listening Practice' },
-            { lessonNumber: 7, title: 'Lesson 7: Expressing Nuanced Emotions' },
-            { lessonNumber: 8, title: 'Lesson 8: Review and Practice' }
-        ]
-    }
-];
 
 (function initialiseCourseManagement() {
     const levelTabsContainer = document.querySelector('.level-tabs');
@@ -339,14 +236,13 @@ const sampleCourseData = [
         lessonCardTemplate
     });
 
-    const useMockData = new URLSearchParams(window.location.search).get('mock') === 'true';
-
     const manager = new CourseManager({
         ui,
-        apiEndpoint: '/api/courses',
-        sampleCourses: sampleCourseData.map(course => new Course(course)),
-        useMockData
+        apiEndpoint: '/api/courses'
     });
 
-    manager.init();
+    manager.init().catch(error => {
+        console.error('Initialisation failed', error);
+        ui.showStatus('Unable to load courses right now. Please try again later.');
+    });
 })();
