@@ -33,6 +33,10 @@ app.get('/course-management', (req, res) => {
     res.render('course-management', { active: 'courses' });
 });
 
+app.get('/contact', (req, res) => {
+    res.render('contact', { active: 'contact' });
+});
+
 app.get('/api/courses', async (req, res) => {
     try {
         const [courseRows] = await pool.query(
