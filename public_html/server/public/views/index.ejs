@@ -10,7 +10,7 @@
         <link rel="stylesheet" href="/styles.css" />
     </head>
     <body>
-        <%- include('partials/nav', { active }) %>
+        <%- include('partials/nav', { active, currentUser }) %>
         <main class="hero section">
             <section class="hero__left">
                 <div class="left-card">
@@ -39,5 +39,6 @@
                 </div>
             </section>
         </main>
+        <script src="/js/nav-menu.js" defer></script>
     </body>
 </html>

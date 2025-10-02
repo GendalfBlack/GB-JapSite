@@ -10,7 +10,7 @@
         <link rel="stylesheet" href="/styles.css" />
     </head>
     <body>
-        <%- include('partials/nav', { active }) %>
+        <%- include('partials/nav', { active, currentUser }) %>
 
         <main class="section auth-page">
             <header class="auth-header">
@@ -146,5 +146,6 @@
                 </section>
             </div>
         </main>
+        <script src="/js/nav-menu.js" defer></script>
     </body>
 </html>

@@ -36,5 +36,6 @@
 .ftpquota
 .htaccess
 package.json
+!public_html/server/package.json
 package-lock.json
 /public_html/node_modules/
