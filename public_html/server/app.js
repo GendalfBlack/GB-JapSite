@@ -2,7 +2,11 @@ const path = require('path');
 const express = require('express');
 const mysql = require('mysql2/promise');
 const dotenv = require('dotenv');
-const crypto = require('crypto');
+const session = require('express-session');
+
+const UserRepository = require('./services/UserRepository');
+const AuthService = require('./services/AuthService');
+const AuthController = require('./controllers/AuthController');
 
 dotenv.config();
 
@@ -19,37 +23,34 @@ const pool = mysql.createPool({
     queueLimit: 0
 });
 
+const userRepository = new UserRepository(pool);
+const authService = new AuthService(userRepository);
+const authController = new AuthController(authService);
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(
+    session({
+        secret: process.env.SESSION_SECRET || 'development-secret',
+        resave: false,
+        saveUninitialized: false,
+        cookie: {
+            httpOnly: true,
+            secure: false,
+            maxAge: 1000 * 60 * 60 * 24
+        }
+    })
+);
+
+app.use((req, res, next) => {
+    res.locals.currentUser = req.session.user || null;
+    next();
+});
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'public', 'views'));
-
-const hashPassword = (password) =>
-    crypto.createHash('sha256').update(password).digest('hex');
-
-const renderRegisterPage = (res, { status = 200, registerForm = {}, messages = {} } = {}) => {
-    const defaultForm = {
-        login: '',
-        profileName: '',
-        email: '',
-        subscriptionId: ''
-    };
-
-    const defaultMessages = {
-        registerErrors: [],
-        registerSuccess: null,
-        loginErrors: [],
-        loginSuccess: null
-    };
-
-    res.status(status).render('register', {
-        active: 'auth',
-        registerForm: { ...defaultForm, ...registerForm },
-        messages: { ...defaultMessages, ...messages }
-    });
-};
 
 // pages
 app.get('/', (req, res) => {
@@ -64,171 +65,10 @@ app.get('/contact', (req, res) => {
     res.render('contact', { active: 'contact' });
 });
 
-app.get('/register', (req, res) => {
-    renderRegisterPage(res);
-});
-
-app.post('/register', async (req, res) => {
-    const { login, profileName, email, password, subscriptionId } = req.body;
-    const trimmedLogin = (login || '').trim();
-    const trimmedProfileName = (profileName || '').trim();
-    const trimmedEmail = (email || '').trim();
-    const trimmedSubscriptionId = (subscriptionId || '').trim();
-    const errors = [];
-
-    if (!trimmedLogin || trimmedLogin.length < 3) {
-        errors.push('Вкажіть логін щонайменше з 3 символів.');
-    }
-
-    if (!trimmedProfileName || trimmedProfileName.length < 2) {
-        errors.push('Ім\'я профілю має містити щонайменше 2 символи.');
-    }
-
-    if (!trimmedEmail) {
-        errors.push('Вкажіть електронну адресу.');
-    } else {
-        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailPattern.test(trimmedEmail)) {
-            errors.push('Електронна адреса має некоректний формат.');
-        }
-    }
-
-    if (!password || password.length < 6) {
-        errors.push('Пароль має містити щонайменше 6 символів.');
-    }
-
-    if (trimmedSubscriptionId && trimmedSubscriptionId.length > 32) {
-        errors.push('ID підписки не може бути довшим за 32 символи.');
-    }
-
-    if (errors.length) {
-        return renderRegisterPage(res, {
-            status: 400,
-            registerForm: {
-                login: trimmedLogin,
-                profileName: trimmedProfileName,
-                email: trimmedEmail,
-                subscriptionId: trimmedSubscriptionId
-            },
-            messages: { registerErrors: errors }
-        });
-    }
-
-    try {
-        const [existing] = await pool.query(
-            'SELECT id FROM users WHERE login = ? OR email = ? LIMIT 1',
-            [trimmedLogin, trimmedEmail]
-        );
-
-        if (existing.length) {
-            return renderRegisterPage(res, {
-                status: 409,
-                registerForm: {
-                    login: trimmedLogin,
-                    profileName: trimmedProfileName,
-                    email: trimmedEmail,
-                    subscriptionId: trimmedSubscriptionId
-                },
-                messages: {
-                    registerErrors: ['Користувач із таким логіном або електронною адресою вже існує.']
-                }
-            });
-        }
-
-        const passwordHash = hashPassword(password);
-
-        await pool.query(
-            `INSERT INTO users (login, profile_name, email, password_hash, subscription_id, is_admin)
-             VALUES (?, ?, ?, ?, ?, ?)`,
-            [
-                trimmedLogin,
-                trimmedProfileName,
-                trimmedEmail,
-                passwordHash,
-                trimmedSubscriptionId || null,
-                0
-            ]
-        );
-
-        return renderRegisterPage(res, {
-            messages: {
-                registerSuccess: 'Обліковий запис успішно створено! Тепер ви можете увійти.'
-            }
-        });
-    } catch (error) {
-        console.error('Error registering user:', error);
-        return renderRegisterPage(res, {
-            status: 500,
-            registerForm: {
-                login: trimmedLogin,
-                profileName: trimmedProfileName,
-                email: trimmedEmail,
-                subscriptionId: trimmedSubscriptionId
-            },
-            messages: {
-                registerErrors: ['Сталася помилка під час створення акаунта. Спробуйте ще раз пізніше.']
-            }
-        });
-    }
-});
-
-app.post('/login', async (req, res) => {
-    const { identifier, password } = req.body;
-    const trimmedIdentifier = (identifier || '').trim();
-    const errors = [];
-
-    if (!trimmedIdentifier) {
-        errors.push('Вкажіть логін або електронну адресу.');
-    }
-
-    if (!password) {
-        errors.push('Вкажіть пароль.');
-    }
-
-    if (errors.length) {
-        return renderRegisterPage(res, {
-            status: 400,
-            messages: { loginErrors: errors }
-        });
-    }
-
-    try {
-        const [rows] = await pool.query(
-            'SELECT id, login, profile_name, password_hash FROM users WHERE login = ? OR email = ? LIMIT 1',
-            [trimmedIdentifier, trimmedIdentifier]
-        );
-
-        if (!rows.length) {
-            return renderRegisterPage(res, {
-                status: 404,
-                messages: { loginErrors: ['Обліковий запис не знайдено.'] }
-            });
-        }
-
-        const user = rows[0];
-        const hashedInput = hashPassword(password);
-
-        if (user.password_hash !== hashedInput) {
-            return renderRegisterPage(res, {
-                status: 401,
-                messages: { loginErrors: ['Невірний пароль.'] }
-            });
-        }
-
-        const displayName = user.profile_name || user.login;
-        return renderRegisterPage(res, {
-            messages: { loginSuccess: `Ласкаво просимо, ${displayName}!` }
-        });
-    } catch (error) {
-        console.error('Error logging in user:', error);
-        return renderRegisterPage(res, {
-            status: 500,
-            messages: {
-                loginErrors: ['Сталася помилка під час входу. Спробуйте ще раз пізніше.']
-            }
-        });
-    }
-});
+app.get('/register', authController.showRegister);
+app.post('/register', authController.register);
+app.post('/login', authController.login);
+app.post('/logout', authController.logout);
 
 app.get('/api/courses', async (req, res) => {
     try {

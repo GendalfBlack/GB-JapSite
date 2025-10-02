@@ -12,9 +12,44 @@
             <a href="#">Магазин</a>
             <a href="#">Відгуки</a>
         </nav>
-        <div class="auth-actions">
-            <a class="auth-btn auth-btn--outline" href="/register">Зареєструватися</a>
-            <a class="auth-btn auth-btn--solid" href="/register#login">Увійти</a>
+        <div class="auth-area">
+            <% if (!currentUser) { %>
+                <div class="auth-actions">
+                    <a class="auth-btn auth-btn--outline" href="/register">Зареєструватися</a>
+                    <a class="auth-btn auth-btn--solid" href="/register#login">Увійти</a>
+                </div>
+            <% } else { %>
+                <div class="profile-menu" data-profile-menu>
+                    <button
+                        class="profile-toggle"
+                        type="button"
+                        aria-haspopup="true"
+                        aria-expanded="false"
+                        data-profile-toggle
+                    >
+                        <span class="sr-only">Відкрити меню профілю</span>
+                        <img
+                            src="<%= currentUser.avatarUrl %>"
+                            alt="Профіль <%= currentUser.displayName %>"
+                            class="profile-avatar"
+                            width="44"
+                            height="44"
+                        />
+                    </button>
+                    <div class="profile-dropdown" role="menu" data-profile-dropdown>
+                        <span class="profile-label">Привіт, <%= currentUser.displayName %></span>
+                        <ul class="profile-dropdown__list">
+                            <li><a href="#" role="menuitem">Переглянути профіль</a></li>
+                            <li><a href="#" role="menuitem">Керувати підпискою</a></li>
+                            <li><a href="#" role="menuitem">Налаштування</a></li>
+                        </ul>
+                        <div class="profile-dropdown__separator" role="none"></div>
+                        <form action="/logout" method="post">
+                            <button type="submit" class="profile-dropdown__logout" role="menuitem">Вийти</button>
+                        </form>
+                    </div>
+                </div>
+            <% } %>
         </div>
     </div>
 </header>
